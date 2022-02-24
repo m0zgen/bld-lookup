@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: Yevgeniy Goncharov aka xck, http://sys-adm.in
-# Collect all BLD DNS IP addresses and will try to resolve target domain with BLD
+# Collect all BLD DNS IP addresses and will try to resolve target domain with every IP BLD
 # What is BLD DNS - https://lab.sys-adm.in
 
 # Sys env / paths / etc
