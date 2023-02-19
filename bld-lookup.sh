@@ -6,7 +6,7 @@
 # Sys env / paths / etc
 # -------------------------------------------------------------------------------------------\
 PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
-SCRIPT_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)
+SCRIPT_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd); cd ${SCRIPT_PATH}
 
 # Args and Vars
 # ---------------------------------------------------\
@@ -30,24 +30,24 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-if [[ "$_DOMAIN" -eq "1" ]]; then
-    if [[ -z "$_DOMAIN_DATA" ]]; then
+if [[ "${_DOMAIN}" -eq "1" ]]; then
+    if [[ -z "${_DOMAIN_DATA}" ]]; then
         usage
     fi
-    RESOLVE="$_DOMAIN_DATA"
+    RESOLVE="${_DOMAIN_DATA}"
 else
     usage
 fi
 
-if [[ "$_LIST" -eq "1" ]]; then
-    if [[ -z "$_LIST_DATA" ]]; then
+if [[ "${_LIST}" -eq "1" ]]; then
+    if [[ -z "${_LIST_DATA}" ]]; then
         echo "Set custom list please. Exit. Bye."
         exit 0
     fi
-    DOMAINs=`cat $_LIST_DATA`
+    DOMAINs=`cat ${_LIST_DATA}`
 else
     # Domain max days expires
-    DOMAINs=`cat $SCRIPT_PATH/domains.txt`
+    DOMAINs=`cat ${SCRIPT_PATH}/domains.txt`
 fi
 
 # Initial variables
@@ -74,16 +74,16 @@ space() {
 # ---------------------------------------------------\
 for d in ${DOMAINs}; do
 
-    Info "\n----------------------- Working with domain name: $d -----------------------"
-    ips=$(dig +short bld.sys-adm.in)
+    Info "\n----------------------- Working with domain name: ${d} -----------------------"
+    ips=$(dig +short ${d})
 
     for ip in ${ips}; do
 
-        Info "\n----------------------- IP - $ip:\n"
-        nslookup $RESOLVE $ip
+        Info "\n----------------------- IP - ${ip}:\n"
+        nslookup ${RESOLVE} ${ip}
 
-        time=`dig @$ip $RESOLVE | awk '/Query time:/ {print " "$4}'`
-        echo -e "Response speed: $time ms"
+        time=`dig @${ip} ${RESOLVE} | awk '/Query time:/ {print " "$4}'`
+        echo -e "Response speed: ${time} ms"
 
         # echo -e "\n----------------------- Done from IP: $ip -----------------------\n"
     done
