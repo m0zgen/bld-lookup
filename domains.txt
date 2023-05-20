@@ -1,2 +1,3 @@
+ada.openbld.net
+ric.openbld.net
 bld.sys-adm.in
-a-bld.sys-adm.in
