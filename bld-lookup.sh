@@ -74,20 +74,42 @@ space() {
 # ---------------------------------------------------\
 for d in ${DOMAINs}; do
 
-    Info "\n----------------------- Working with domain name: ${d} -----------------------"
-    ips=$(dig +short ${d})
+    # Export IP from variable $d
+    ip_line=$(grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" <<< "${d}")
+    
+    if [[ -z "${ip_line}" ]]; then
 
-    for ip in ${ips}; do
+        Info "\n----------------------- Working with domain name: ${d} -----------------------"
+        ips=$(dig +short ${d})
 
-        Info "\n----------------------- IP - ${ip}:\n"
-        nslookup ${RESOLVE} ${ip}
+        for ip in ${ips}; do
 
-        time=`dig @${ip} ${RESOLVE} | awk '/Query time:/ {print " "$4}'`
-        echo -e "Response speed: ${time} ms"
+            Info "\n----------------------- IP - ${ip}:\n"
+            nslookup ${RESOLVE} ${ip}
 
-        # echo -e "\n----------------------- Done from IP: $ip -----------------------\n"
-    done
+            time=`dig @${ip} ${RESOLVE} | awk '/Query time:/ {print " "$4}'`
+            echo -e "Response speed: ${time} ms"
+
+            # echo -e "\n----------------------- Done from IP: $ip -----------------------\n"
+        done
+
+    fi
 
 done
+
+# Detect IP address in text line
+# echo ${_LIST_DATA}
+ip=$(grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" ${SCRIPT_PATH}/domains.txt)
+
+if [[ -z "${ip}" ]]; then
+    echo "No IP address found in ${_DOMAINs} file. Exit."
+    exit 1
+else
+    # each IP address
+    for i in ${ip}; do
+        Info "\n----------------------- Working with IP: ${i} -----------------------"
+        nslookup ${RESOLVE} ${i}
+    done
+fi
 
 
